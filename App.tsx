@@ -1,5 +1,5 @@
-import React from 'react';
-import {SafeAreaView, ScrollView, StatusBar, Text, View} from 'react-native';
+import React, {useState} from 'react';
+import {Pressable, SafeAreaView, StatusBar, Text, View} from 'react-native';
 import GoalScreen from './src/components/GoalScreen';
 import AppStyles from './src/components/AppStyles';
 
@@ -16,13 +16,29 @@ function StatBar() {
  * Screen navigator component in the bottom
  * Contins pressable areas that move the layout around, or switch views
  */
-// interface ScreenNavProps {}
-function ScreenNav() {
+type ScreenNavProps = {
+  setActiveScreen: any;
+};
+
+function ScreenNav(props: ScreenNavProps) {
+  // function navButtonPressHandler() {}
   return (
     <>
-      <Text style={AppStyles.navButton}>Calendar</Text>
-      <Text style={AppStyles.navButton}>Main</Text>
-      <Text style={AppStyles.navButton}>Settings</Text>
+      <View style={AppStyles.navButtonContainer}>
+        <Pressable onPress={() => props.setActiveScreen(1)}>
+          <Text style={AppStyles.navButton}>Calendar</Text>
+        </Pressable>
+      </View>
+      <View style={AppStyles.navButtonContainer}>
+        <Pressable onPress={() => props.setActiveScreen(0)}>
+          <Text style={AppStyles.navButton}>Main</Text>
+        </Pressable>
+      </View>
+      <View style={AppStyles.navButtonContainer}>
+        <Pressable onPress={() => props.setActiveScreen(0)}>
+          <Text style={AppStyles.navButton}>Settings</Text>
+        </Pressable>
+      </View>
     </>
   );
 }
@@ -32,17 +48,17 @@ function ScreenNav() {
  * Highest level flex layout is controlled here
  */
 function App(): JSX.Element {
+  const [activeScreen, setActiveScreen] = useState(0);
+
   return (
     <SafeAreaView>
       <StatBar />
       <View style={AppStyles.mainContainer}>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={AppStyles.scrollArea}>
-          <GoalScreen />
-        </ScrollView>
+        <View style={AppStyles.scrollArea}>
+          <GoalScreen activeScreen={activeScreen} />
+        </View>
         <View style={AppStyles.bottomBar}>
-          <ScreenNav />
+          <ScreenNav setActiveScreen={setActiveScreen} />
         </View>
       </View>
     </SafeAreaView>

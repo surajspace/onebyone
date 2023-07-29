@@ -1,82 +1,78 @@
-import React from 'react';
-import {Text, View} from 'react-native';
-import {Dimensions} from 'react-native';
-import {useSwipe, getDateArray} from '../utils/useSwipe';
+import React, {useEffect, useRef} from 'react';
+import {Text, View, FlatList, Dimensions} from 'react-native';
+import {getDateArray} from '../utils/utils';
 import styleFactory from './GoalScreenStyles';
 
-interface DayViewProps {
-  date: any;
+type DayViewProps = {
+  timestamp: any;
   ones: Array<number>;
+};
+
+type ItemProps = {
+  item: DayViewProps;
   styles: any;
-}
-function DayView(props: DayViewProps) {
-  const dateObj = getDateArray(props.date);
+};
 
-  console.log(dateObj);
-
+const DayView = ({item, styles}: ItemProps) => {
+  const dateObj = getDateArray(item.timestamp);
   return (
-    <View style={props.styles.calendarColumn}>
-      <View style={props.styles.dateContainer}>
-        <Text style={props.styles.dateField}>{dateObj.month}</Text>
-        <Text style={props.styles.dateNum}>{dateObj.date}</Text>
-        <Text style={props.styles.dateField}>{dateObj.weekday}</Text>
+    <View style={styles.calendarColumn}>
+      <View style={styles.dateContainer}>
+        <Text style={styles.dateField}>{dateObj.month}</Text>
+        <Text style={styles.dateNum}>{dateObj.date}</Text>
+        <Text style={styles.dateField}>{dateObj.weekday}</Text>
       </View>
-      <View style={props.styles.onesColumn}>
-        {props.ones.map(one => {
-          const oneStyle = one
-            ? props.styles.activeOne
-            : props.styles.passiveOne;
-          return <Text style={oneStyle}>1</Text>;
+      <View style={styles.onesColumn}>
+        {item.ones.map((one, index) => {
+          const oneStyle = one ? styles.activeOne : styles.passiveOne;
+          return (
+            <Text key={item.timestamp + '|' + index} style={oneStyle}>
+              1
+            </Text>
+          );
         })}
       </View>
     </View>
   );
-}
+};
 
-function GoalScreen() {
+type GoalScreenProps = {
+  activeScreen: any;
+};
+
+function GoalScreen(props: GoalScreenProps) {
+  console.log(props);
   const windowWidth = Dimensions.get('window').width;
   const windowHeight = Dimensions.get('window').height;
   const styles = styleFactory(windowWidth, windowHeight);
 
-  function onSwipeLeft() {
-    console.log('SWIPE_LEFT');
-  }
+  const flatlistRef = useRef<FlatList<DayViewProps>>(null);
+  let scrollCalendarIntoView = useRef({});
 
-  function onSwipeRight() {
-    console.log('SWIPE_RIGHT');
-  }
+  useEffect(() => {
+    props.activeScreen
+      ? (scrollCalendarIntoView.current = {right: 0})
+      : (scrollCalendarIntoView.current = {});
+    flatlistRef.current?.scrollToOffset({animated: true, offset: 0});
+  }, [props.activeScreen, scrollCalendarIntoView]);
 
-  const {onTouchStart, onTouchEnd} = useSwipe(onSwipeLeft, onSwipeRight, 6);
-
-  let onesData = [
-    {date: new Date(), ones: [1, 0, 1, 1, 0]},
-    {date: new Date('7/27/23'), ones: [1, 1, 1, 0, 1]},
-    {date: new Date('7/26/23'), ones: [1, 0, 0, 1, 0]},
-    {date: new Date('7/25/23'), ones: [1, 1, 0, 0, 1]},
-    {date: new Date('7/24/23'), ones: [0, 0, 1, 1, 0]},
-    {date: new Date('7/23/23'), ones: [1, 0, 1, 1, 1]},
-    {date: new Date('7/22/23'), ones: [1, 0, 1, 1, 1]},
-    {date: new Date('7/21/23'), ones: [0, 1, 1, 1, 0]},
-    {date: new Date('7/20/23'), ones: [1, 1, 1, 1, 0]},
-    {date: new Date('7/19/23'), ones: [1, 0, 1, 1, 1]},
+  let onesData: DayViewProps[] = [
+    {timestamp: 1690661323853, ones: [0, 0, 0, 1, 0]},
+    {timestamp: 1690569000000, ones: [0, 1, 1, 1, 1]},
+    {timestamp: 1690482600000, ones: [1, 0, 1, 1, 0]},
+    {timestamp: 1690396200000, ones: [1, 1, 1, 0, 1]},
+    {timestamp: 1690309800000, ones: [1, 0, 0, 1, 0]},
+    {timestamp: 1690223400000, ones: [1, 1, 0, 0, 1]},
+    {timestamp: 1690137000000, ones: [0, 0, 1, 1, 0]},
+    {timestamp: 1690050600000, ones: [1, 0, 1, 1, 1]},
+    {timestamp: 1689964200000, ones: [1, 0, 1, 1, 1]},
+    {timestamp: 1689877800000, ones: [0, 1, 1, 1, 0]},
+    {timestamp: 1689791400000, ones: [1, 1, 1, 1, 0]},
+    {timestamp: 1689705000000, ones: [1, 0, 1, 1, 1]},
   ];
 
-  const calendarItem: Array<any> = [];
-  onesData.forEach(onesDataRow => {
-    calendarItem.push(
-      <DayView
-        date={onesDataRow.date}
-        ones={onesDataRow.ones}
-        styles={styles}
-      />,
-    );
-  });
-
   return (
-    <View
-      style={styles.mainContainer}
-      onTouchStart={onTouchStart}
-      onTouchEnd={onTouchEnd}>
+    <View style={styles.mainContainer}>
       <View style={styles.goalHeaderContainer}>
         <View style={styles.goalNameContainer}>
           <Text style={styles.goalName}>Goal title</Text>
@@ -86,7 +82,11 @@ function GoalScreen() {
           <Text style={styles.goalCountTarget}>| 200</Text>
         </View>
       </View>
-      <View style={styles.tasksAndCalendarContainer}>
+      <View
+        style={[
+          styles.tasksAndCalendarContainer,
+          scrollCalendarIntoView.current,
+        ]}>
         <View style={styles.tasksContainer}>
           <Text style={styles.taskItem}>Task number one</Text>
           <Text style={styles.taskItem}>Two times lucky</Text>
@@ -94,7 +94,16 @@ function GoalScreen() {
           <Text style={styles.taskItem}>May the 4th be with you</Text>
           <Text style={styles.taskItem}>Cinco de Mayo</Text>
         </View>
-        <View style={styles.calendarContainer}>{calendarItem}</View>
+        <View style={styles.calendarContainer}>
+          <FlatList
+            ref={flatlistRef}
+            horizontal
+            inverted
+            data={onesData}
+            renderItem={({item}) => DayView({item, styles})}
+            keyExtractor={item => item.timestamp}
+          />
+        </View>
       </View>
     </View>
   );

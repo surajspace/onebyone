@@ -61,8 +61,8 @@ export default (wW: number, wH: number) => {
     },
 
     calendarContainer: {
+      paddingTop: 30,
       flexBasis: 0.9 * wW,
-      flexDirection: 'row-reverse',
     },
 
     calendarColumn: {
