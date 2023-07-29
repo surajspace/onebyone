@@ -9,7 +9,7 @@ import AppStyles from './src/components/AppStyles';
  */
 // interface StatBarProps {}
 function StatBar() {
-  return <StatusBar barStyle={'light-content'} backgroundColor={'#011627'} />;
+  return <StatusBar barStyle={'light-content'} backgroundColor={'#202C39'} />;
 }
 
 /**
@@ -21,7 +21,7 @@ function ScreenNav() {
   return (
     <>
       <Text style={AppStyles.navButton}>Calendar</Text>
-      <Text style={AppStyles.navButton}>1 By 1</Text>
+      <Text style={AppStyles.navButton}>Main</Text>
       <Text style={AppStyles.navButton}>Settings</Text>
     </>
   );
