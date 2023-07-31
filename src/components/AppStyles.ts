@@ -27,4 +27,9 @@ export default StyleSheet.create({
     fontSize: 18,
     color: '#355863',
   },
+
+  navButtonActive: {
+    fontSize: 18,
+    color: '#B74F6F',
+  },
 });

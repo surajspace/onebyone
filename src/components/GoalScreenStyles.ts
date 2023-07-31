@@ -1,6 +1,6 @@
 import {StyleSheet} from 'react-native';
 
-export default (wW: number, wH: number) => {
+export default (wW: number) => {
   return StyleSheet.create({
     mainContainer: {},
 

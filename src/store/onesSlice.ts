@@ -2,12 +2,26 @@ import {createSlice} from '@reduxjs/toolkit';
 import type {PayloadAction} from '@reduxjs/toolkit';
 
 export interface OnesState {
-  onesData: any;
+  goalName: string;
+  tasksList: string[];
+  onesTarget: number;
+  onesToday: number[];
   onesTotal: number;
-  onesToday: Array<number>;
+  onesData: any;
 }
 
 const initialState: OnesState = {
+  goalName: 'Hundred days',
+  tasksList: [
+    'Task number one',
+    'Two times lucky',
+    'Fool me thrice, strike one',
+    'May the 4th be with you',
+    'Cinco de Mayo',
+  ],
+  onesTarget: 500,
+  onesToday: [0, 0, 0, 1, 0],
+  onesTotal: 30,
   onesData: {
     '19-jul-2023': [1, 0, 0, 1, 0],
     '20-jul-2023': [1, 0, 1, 1, 0],
@@ -24,8 +38,6 @@ const initialState: OnesState = {
     '31-jul-2023': [1, 1, 1, 1, 0],
     '1-aug-2023': [1, 0, 1, 1, 0],
   },
-  onesTotal: 30,
-  onesToday: [0, 0, 0, 1, 0],
 };
 
 export interface ToggleOneAction {
