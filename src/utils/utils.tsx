@@ -23,3 +23,16 @@ export function getDateArray(timestamp: number) {
     weekday: weekdays[dateObj.getDay()],
   };
 }
+
+export function transformData(onesDataObj: any) {
+  let onesArray = [];
+  if (onesDataObj) {
+    for (let date in onesDataObj) {
+      onesArray.push({
+        date: date,
+        ones: onesDataObj[date],
+      });
+    }
+  }
+  return onesArray.reverse();
+}
